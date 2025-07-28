@@ -1,0 +1,28 @@
+{
+  "name": "TshwaneFix - City of Tshwane Service Delivery",
+  "short_name": "TshwaneFix",
+  "description": "Official City of Tshwane municipal service delivery app for reporting potholes and illegal dumping",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#008B45",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/lovable-uploads/dec5cc3d-2b68-4c06-919a-d3296d1c3cad.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/dec5cc3d-2b68-4c06-919a-d3296d1c3cad.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "utilities", "public"],
+  "lang": "en-ZA",
+  "dir": "ltr"
+}
