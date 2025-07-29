@@ -36,13 +36,80 @@
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/sw.js')
             .then((registration) => {
-              console.log('SW registered: ', registration);
+              console.log('SW registered successfully: ', registration);
+              
+              // Check for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      console.log('New content available, please refresh.');
+                    }
+                  });
+                }
+              });
             })
             .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
+              console.error('SW registration failed: ', registrationError);
             });
         });
       }
+
+      // PWA Install prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        console.log('PWA install prompt available');
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show custom install button or banner
+        const installBanner = document.createElement('div');
+        installBanner.id = 'install-banner';
+        installBanner.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: #008B45;
+          color: white;
+          padding: 12px;
+          text-align: center;
+          z-index: 9999;
+          cursor: pointer;
+          font-family: system-ui, -apple-system, sans-serif;
+        `;
+        installBanner.innerHTML = '📱 Install TshwaneFix app - Tap here to add to home screen';
+        
+        installBanner.addEventListener('click', () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+              console.log('User choice:', choiceResult.outcome);
+              deferredPrompt = null;
+              installBanner.remove();
+            });
+          }
+        });
+        
+        document.body.appendChild(installBanner);
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+          if (installBanner.parentNode) {
+            installBanner.remove();
+          }
+        }, 10000);
+      });
+
+      // Handle successful installation
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('PWA was installed successfully');
+        const installBanner = document.getElementById('install-banner');
+        if (installBanner) {
+          installBanner.remove();
+        }
+      });
     </script>
   </body>
 </html>
