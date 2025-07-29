@@ -8,18 +8,25 @@ export const useReports = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (user) {
-      loadUserReports();
-    } else {
-      setReports([]);
-    }
-    setIsLoading(false);
+    const loadData = async () => {
+      if (user) {
+        console.log('User logged in, loading reports for:', user.id);
+        await loadUserReports();
+      } else {
+        console.log('No user, clearing reports');
+        setReports([]);
+      }
+      setIsLoading(false);
+    };
+    
+    loadData();
   }, [user]);
 
-  const loadUserReports = () => {
+  const loadUserReports = async () => {
     try {
       const allReports = JSON.parse(localStorage.getItem('tshwanefix_reports') || '[]');
       const userReports = allReports.filter((report: Report) => report.userId === user?.id);
+      console.log('Loading user reports:', { userId: user?.id, totalReports: allReports.length, userReports: userReports.length });
       setReports(userReports);
     } catch (error) {
       console.error('Error loading reports:', error);
@@ -65,7 +72,7 @@ export const useReports = () => {
       allReports.push(newReport);
       localStorage.setItem('tshwanefix_reports', JSON.stringify(allReports));
       
-      loadUserReports(); // Refresh user reports
+      await loadUserReports(); // Refresh user reports
       return true;
     } catch (error) {
       console.error('Error creating report:', error);
@@ -92,7 +99,7 @@ export const useReports = () => {
       };
 
       localStorage.setItem('tshwanefix_reports', JSON.stringify(allReports));
-      loadUserReports(); // Refresh user reports
+      await loadUserReports(); // Refresh user reports
       return true;
     } catch (error) {
       console.error('Error updating report status:', error);

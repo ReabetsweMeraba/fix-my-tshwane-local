@@ -13,8 +13,10 @@ export const ReportsMap: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
   useEffect(() => {
-    setAllReports(loadAllReports());
-  }, [loadAllReports]);
+    // Load reports directly without dependency on the function
+    const reports = loadAllReports();
+    setAllReports(reports);
+  }, []); // Empty dependency array to run only once
 
   const getStatusColor = (status: string) => {
     switch (status) {
